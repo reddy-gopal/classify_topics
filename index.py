@@ -211,25 +211,240 @@ DO BOTH TASKS:
 - Keep meaning unchanged.
 
 2) CLASSIFICATION
-- subject: short label
-- topic: short + specific
-- difficulty_level: exactly one of ["Easy","Medium","Hard"]
-
-OUTPUT FORMAT (STRICT JSON ONLY):
-Return ONLY valid JSON: an array of objects, same order as input.
-Each object MUST be:
-{{
-  "row_id": <int>,
-  "question_text": <string>,
-  "option_a": <string>,
-  "option_b": <string>,
-  "option_c": <string>,
-  "option_d": <string>,
-  "explanation": <string>,
-  "subject": <string>,
-  "topic": <string>,
-  "difficulty_level": "Easy"|"Medium"|"Hard"
-}}
+You are an exam-question topic classifier and Question Difficulty Estimator for Indian entrance exams
+(JEE, VITEEE, SRMJEEE, BITSAT, CUET, LPUNEST, etc.).
+ 
+Your task is to classify each MCQ into:
+1) subject_group
+2) subtopic (MUST be EXACTLY one from the ALLOWED SUBTOPIC LIST below - NO EXCEPTIONS)
+3) confidence (0.00–1.00)
+4) reasoning (ONE short line)
+5) Difficulty of Question (Easy, Medium, Hard)
+ 
+CRITICAL RULES - STRICTLY ENFORCED:
+- You MUST use ONLY the subtopics listed below. There are NO other valid topics.
+- Do NOT create, invent, generalize, or modify any topic names.
+- Do NOT use parent/main topic names (e.g., "Mathematics", "Physics", "Chemistry").
+- You MUST match the exact spelling and capitalization from the list below.
+- If a question doesn't clearly match any subtopic, choose the CLOSEST match from the list and reduce confidence accordingly.
+- If multiple concepts appear, pick the ONE most dominant concept required to solve the question.
+- Output MUST be valid minified JSON only (no markdown, no extra text).
+- ANY topic not in the list below is INVALID and must not be used.
+ 
+ 
+ALLOWED SUBTOPICS (use EXACT spelling - these are the ONLY valid topics):
+ 
+MATHEMATICS:
+Sets, Relations & Functions
+Complex Numbers
+Quadratic Equations & Expressions
+Sequences & Series
+Permutations & Combinations
+Binomial Theorem
+Matrices & Determinants
+Probability
+Mathematical Induction
+Statistics (Mean, Median, Mode, Variance)
+Limits
+Continuity & Differentiability
+Applications of Derivatives
+Maxima & Minima
+Indefinite Integrals
+Definite Integrals
+Differential Equations
+Area Under Curves
+Applications of Integrals
+Straight Lines
+Pair of Lines
+Circles
+Conic Sections (Parabola / Ellipse / Hyperbola)
+3D Geometry (Direction Cosines, Lines, Planes, Distances)
+Trigonometric Ratios
+Trigonometric Equations
+Inverse Trigonometric Functions
+Properties & Identities
+Heights & Distances
+Vector operations
+Scalar product
+Vector product
+Triple product
+Statements
+Logical Connectives
+Implications
+Truth Tables
+ 
+PHYSICS:
+Units & Measurements
+Kinematics
+Laws of Motion
+Work, Energy & Power
+Rotational Motion
+Gravitation
+Center of Mass
+Conservation of Momentum
+Fluid Mechanics
+Elasticity
+Surface Tension
+Viscosity
+Oscillations & SHM
+Thermal Expansion
+Heat Transfer
+Kinetic Theory of Gases
+Thermodynamics (First Law, Second Law)
+Entropy
+Wave Motion
+Sound Waves
+Doppler Effect
+Beats
+Electric Charges & Fields
+Gauss Law
+Electric Potential & Capacitance
+Current Electricity
+Series & Parallel circuits
+Errors & Meters (Ammeter/Voltmeter)
+Moving Charges & Magnetism
+Magnetic Effects of Current
+Electromagnetic Induction
+Alternating Current
+Transformers
+Ray Optics
+Lenses & Mirrors
+Optical Instruments
+Wave Optics
+Interference & Diffraction
+Polarization
+Atomic Physics
+Nuclear Physics
+Radioactivity
+Semiconductor Electronics
+Photoelectric Effect
+X-Rays
+ 
+CHEMISTRY:
+Mole Concept
+Atomic Structure
+Chemical Bonding
+States of Matter
+Thermodynamics
+Thermochemistry
+Chemical Equilibrium
+Ionic Equilibrium
+Electrochemistry
+Chemical Kinetics
+Solutions & Colligative Properties
+Surface Chemistry
+Solid State
+Periodic Table & Periodicity
+Hydrogen & s-Block
+p-Block Elements
+d-Block & f-Block Elements
+Coordination Compounds
+Metallurgy
+Environmental Chemistry
+General Organic Chemistry (GOC)
+Hydrocarbons (Alkanes, Alkenes, Alkynes)
+Aromatic Compounds (Benzene, Reactions)
+Haloalkanes & Haloarenes
+Alcohols, Phenols & Ethers
+Aldehydes & Ketones
+Carboxylic Acids & Derivatives
+Amines
+Polymers
+Biomolecules
+Practical Organic Chemistry (POC)
+Isomerism (Structural, Geometrical, Optical)
+ 
+ENGLISH:
+Nouns, Pronouns
+Verbs, Tenses
+Adjectives & Adverbs
+Articles
+Prepositions
+Conjunctions
+Subject–Verb Agreement
+Active & Passive Voice
+Direct & Indirect Speech
+Sentence Correction
+Synonyms
+Antonyms
+One-word Substitutions
+Homophones & Homonyms
+Idioms & Phrases
+Word Analogies
+Spelling Correction
+Passage-based Questions
+Main Idea / Theme
+Tone & Attitude
+Fact vs Inference
+Vocabulary in Context
+Para Jumbles
+Sentence Rearrangement
+Sentence Completion
+Fill-in-the-Blanks
+Spot the Error
+Choosing the Correct Sentence
+Grammar-based Error Types
+ 
+LOGICAL REASONING:
+Coding & Decoding
+Direction Sense
+Blood Relations
+Ordering & Ranking
+Puzzles (Easy–Moderate)
+Syllogisms
+Statements & Assumptions
+Statements & Conclusions
+Statements & Arguments
+Number Series
+Letter Series
+Symbol Series
+Pattern Completion
+Analogies (Number, Letter, Word)
+Tables
+Bar graph
+Pie Chart
+Line Graph
+Figure Series
+Mirror Images
+Water Images
+Paper Folding / Cutting
+Embedded Figures
+Cause & Effect
+Course of Action
+Strengthening & Weakening Arguments
+ 
+APTITUDE / GENERAL KNOWLEDGE:
+Number System
+Percentages
+Profit & Loss
+Ratio & Proportion
+Averages
+Simple Interest
+Compound Interest
+Time & Work
+Time, Speed & Distance
+Pipes & Cisterns
+Mixtures & Alligations
+Probability (Basic)
+Permutation & Combination (Basic)
+Data Interpretation (Tables/Graphs)
+Static GK
+Indian Polity
+Indian Geography
+Indian Economy
+History (Modern India)
+Science & Technology
+Important Organizations (UN, WHO, WTO…)
+Sports
+Awards & Honours
+Books & Authors
+Government Schemes
+Important Appointments
+Science & Tech in News
+ 
+REMEMBER: The above list contains the ONLY valid subtopics. You MUST select from this list exclusively.
+Do NOT use any topic that is not explicitly listed above. If you cannot find an exact match, choose the closest
+subtopic from the list and adjust your confidence accordingly.
 
 INPUT:
 {json.dumps(payload, ensure_ascii=False)}
